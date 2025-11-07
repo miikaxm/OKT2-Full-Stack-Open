@@ -1,4 +1,4 @@
-sequenceDiagram
+```mermaid
     participant browser
     participant server
 
@@ -26,4 +26,4 @@ sequenceDiagram
     activate server
     server-->>browser: JSON data (sisältää myös juuri lisätyn muistiinpanon)
     deactivate server
-
+```
