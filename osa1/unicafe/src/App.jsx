@@ -11,14 +11,16 @@ const Button = (props) => {
 const Statistics = (props) => {
   if (props.valueAll > 0) {
     return (
-      <div>
-        <StatisticLine text="Good" value={props.valueGood}/>
-        <StatisticLine text="Neutral" value={props.valueNeutral}/>
-        <StatisticLine text="Bad" value={props.valueBad}/>
-        <StatisticLine text="All" value={props.valueAll}/>
-        <StatisticLine text="Average" value={props.valueAverage}/>
-        <StatisticLine text="Positive" value={props.valuePositive}/>
-      </div>
+      <table>
+        <tbody>
+          <StatisticLine text="Good" value={props.valueGood}/>
+          <StatisticLine text="Neutral" value={props.valueNeutral}/>
+          <StatisticLine text="Bad" value={props.valueBad}/>
+          <StatisticLine text="All" value={props.valueAll}/>
+          <StatisticLine text="Average" value={props.valueAverage}/>
+          <StatisticLine text="Positive" value={props.valuePositive}/>
+        </tbody>
+      </table>
     )
   } else {
     return (
@@ -28,10 +30,13 @@ const Statistics = (props) => {
 }
 
 const StatisticLine = (props) => {
-  return (
-    <p>{props.text} {props.value}</p>
-  )
-}
+    return (
+      <tr>
+        <td>{props.text}</td>
+        <td>{props.value}</td>
+      </tr>
+    )
+  }
 
 const App = () => {
   // tallenna napit omaan tilaansa
