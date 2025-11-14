@@ -6,6 +6,12 @@ const Button = (props) => {
   )
 }
 
+const Header = (props) => {
+  return (
+    <h1>{props.text}</h1>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -36,11 +42,33 @@ const App = () => {
     setVotes(copy)
   }
 
+  function indexOfMax(arr) {
+      if (arr.length === 0) {
+          return -1;
+      }
+
+      var max = arr[0];
+      var maxIndex = 0;
+
+      for (var i = 1; i < arr.length; i++) {
+          if (arr[i] > max) {
+              maxIndex = i;
+              max = arr[i];
+          }
+      }
+
+      return maxIndex;
+  }
+
+
   return (
     <div>
+      <Header text="Anecdote of the day"/>
       {anecdotes[selected]} <br />
       <Button text="vote" action={() => vote(selected)}/>
       <Button text="next anecdote" action={() => setSelected(getRandomInteger(0, anecdotes.length))}/>
+      <Header text="Anecdote with most votes"/>
+      {anecdotes[indexOfMax(votes)]}
     </div>
   )
 }
