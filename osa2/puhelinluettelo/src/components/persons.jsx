@@ -1,9 +1,14 @@
-const Persons = (props) => {
-    return (
-        props.personsToShow.map(person => 
-        <p key={person.name}>{person.name} {person.number}</p>
-      )
+const Persons = ({ personsToShow, deletePerson }) => {
+  return (
+    personsToShow.map(person =>
+      <p key={person.id}>
+        {person.name} {person.number}
+        <button onClick={() => deletePerson(person.id)}>
+          Delete
+        </button>
+      </p>
     )
+  )
 }
 
 export default Persons

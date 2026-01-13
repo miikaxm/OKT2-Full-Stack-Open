@@ -47,8 +47,6 @@ const App = () => {
     }
 
     setPersons(persons.concat(personObject))
-    setNewName("")
-    setNewNumber("")
 
     personService
       .create(personObject)
@@ -56,7 +54,21 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName("")
         setNewNumber("")
+        console.log(personObject)
       })
+  }
+
+  const deletePerson = (id) => {
+    if (window.confirm("Poistetaanko henkilö?")) {
+      personService
+        .DelPerson(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          console.error("Poisto epäonnistui", error)
+        })
+    }
   }
 
   const personsToShow = newSearch.trim() === ''
@@ -81,7 +93,10 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons personsToShow={personsToShow}/>
+      <Persons 
+        personsToShow={personsToShow}
+        deletePerson={deletePerson}
+      />
     </div>
   )
 
