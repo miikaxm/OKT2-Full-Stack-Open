@@ -37,16 +37,32 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (persons.some(p => p.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
+
+    const existingPerson = persons.find(p => p.name === newName)
+
     const personObject = {
       name: newName,
       number: newNumber,
     }
 
-    setPersons(persons.concat(personObject))
+    if (existingPerson) {
+      if (window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )) {
+        personService
+          .update(existingPerson.id, personObject)
+          .then(response => {
+            setPersons(
+              persons.map(p =>
+                p.id !== existingPerson.id ? p : response.data
+              )
+            )
+            setNewName("")
+            setNewNumber("")
+          })
+      }
+      return
+    }
 
     personService
       .create(personObject)
@@ -54,9 +70,9 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName("")
         setNewNumber("")
-        console.log(personObject)
       })
   }
+
 
   const deletePerson = (id) => {
     if (window.confirm("Poistetaanko henkilö?")) {
