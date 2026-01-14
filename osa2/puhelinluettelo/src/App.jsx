@@ -4,12 +4,15 @@ import PersonForm from './components/personForm'
 import Persons from './components/persons'
 import axios from 'axios'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState("")
   const [newSearch, setNewSearch] = useState("")
+  const [errorMessage, setErrorMessage] = useState(null)
+
 
   useEffect(() => {
     personService
@@ -59,6 +62,12 @@ const App = () => {
             )
             setNewName("")
             setNewNumber("")
+            setErrorMessage(
+              `Changed ${existingPerson.name}'s number to ${personObject.number}`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 2000);
           })
       }
       return
@@ -70,7 +79,14 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName("")
         setNewNumber("")
+        setErrorMessage(
+          `Added ${personObject.name}`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 2000);
       })
+
   }
 
 
@@ -80,10 +96,15 @@ const App = () => {
         .DelPerson(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
+          setErrorMessage(
+            `Removed ${persons.find(p => p.id === id)?.name}`
+          
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 3000);
         })
-        .catch(error => {
-          console.error("Poisto epäonnistui", error)
-        })
+        
     }
   }
 
@@ -96,6 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter newSearch={newSearch} handleSearchChange={handleSearchChange}/>
       <h3>add a new</h3>
 
@@ -113,6 +135,7 @@ const App = () => {
         personsToShow={personsToShow}
         deletePerson={deletePerson}
       />
+      
     </div>
   )
 
