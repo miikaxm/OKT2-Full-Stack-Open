@@ -54,6 +54,14 @@ const App = () => {
       )) {
         personService
           .update(existingPerson.id, personObject)
+          .catch(error => {
+            setErrorMessage(
+              `Information of ${personObject.name} has already been removed from`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 2500);
+          })
           .then(response => {
             setPersons(
               persons.map(p =>
@@ -67,7 +75,7 @@ const App = () => {
             )
             setTimeout(() => {
               setErrorMessage(null)
-            }, 2000);
+            }, 2500);
           })
       }
       return
@@ -84,7 +92,7 @@ const App = () => {
         )
         setTimeout(() => {
           setErrorMessage(null)
-        }, 2000);
+        }, 2500);
       })
 
   }
