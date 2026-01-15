@@ -1,4 +1,4 @@
-const Countries = ({ countriesToShow }) => {
+const Countries = ({ countriesToShow, setUserInput }) => {
 if (countriesToShow.length > 10) {
     return <p>Too many matches, specify another filter</p>
 } else if (countriesToShow.length === 1) {
@@ -23,6 +23,9 @@ return (
     countriesToShow.map(country =>
         <p key={country.cca2}>
             {country.name.common}
+            <button onClick={() => setUserInput(country.name.common)}>
+                Show
+            </button>
         </p>
     )
 )

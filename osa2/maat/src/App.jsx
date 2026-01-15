@@ -30,7 +30,7 @@ const App = () => {
   return (
     <div>
       <Search userInput={userInput} handleSearch={handleSearch}/>
-      <Countries countriesToShow={countriesToShow}/>
+      <Countries countriesToShow={countriesToShow} setUserInput={setUserInput}/>
     </div>
   )
 }
