@@ -7,6 +7,7 @@ import Countries from './components/Countries'
 const App = () => {
   const [countriesList, setCountries] = useState([])
   const [userInput, setUserInput] = useState("")
+  const [weather, setWeather] = useState([])
 
   useEffect(() => {
     countriesService
@@ -17,7 +18,6 @@ const App = () => {
   }, [])
 
   const handleSearch = (event) => {
-    console.log(event.target.value)
     setUserInput(event.target.value)
   }
 
@@ -30,7 +30,7 @@ const App = () => {
   return (
     <div>
       <Search userInput={userInput} handleSearch={handleSearch}/>
-      <Countries countriesToShow={countriesToShow} setUserInput={setUserInput}/>
+      <Countries countriesToShow={countriesToShow} setUserInput={setUserInput} countriesService={countriesService} setWeather={setWeather} weather={weather}/>
     </div>
   )
 }
