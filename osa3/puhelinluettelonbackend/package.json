@@ -7,6 +7,8 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf dist && cd C:/Users/miika/code/OKT2 Full Stack Open/osa2/puhelinluettelo && npm run build && cp -r dist C:/Users/miika/code/OKT2 Full Stack Open/osa3/puhelinluettelonbackend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
