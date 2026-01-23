@@ -6,29 +6,33 @@ app.use(express.static('dist'))
 app.use(express.json())
 
 
-// Morganin printti
+// Morgan print
 const morgan = require("morgan")
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"))
 morgan.token('body', (req, res) => {
     return JSON.stringify(req.body)
 })
 
+// Info page
 app.get("/info", (request, response) => {
     response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
 })
 
+// Get all persons
 app.get("/api/persons", (request, response) => {
     Person.find({}).then(persons => {
         response.json(persons)
     })
 })
 
+// Get person by id
 app.get("/api/persons/:id", (request, response) => {
     Person.findById(request.params.id).then(person => {
         response.json(person)
     })
 })
 
+// Delete person by id
 app.delete("/api/persons/:id", (request, response) => {
     Person.findByIdAndDelete(request.params.id)
         .then(deletedPerson => {
@@ -41,6 +45,7 @@ app.delete("/api/persons/:id", (request, response) => {
         .catch(() => response.status(400).json({ error: "Virheellinen id" }))
 })
 
+// Create new person
 app.post("/api/persons", (request, response) => {
     const body = request.body
 
@@ -66,6 +71,7 @@ app.post("/api/persons", (request, response) => {
     })
 })
 
+// Port
 const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
