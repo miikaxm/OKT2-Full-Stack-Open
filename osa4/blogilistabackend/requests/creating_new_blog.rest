@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json; charset=utf-8
+
+{
+    "title": "Testi blogi numero 2",
+    "author": "Benjamin Pantsari",
+    "url": "Testi urli 2",
+    "likes": 2350
+}
