@@ -42,6 +42,27 @@ test('id is named id not _id', async () => {
   assert.strictEqual(json._id, undefined)
 })
 
+test('a blog can be added', async () => {
+  const newBlog = { 
+    title: "Testi mesti",
+    author: "miika valkonen",
+    url: "testi2",
+    likes: 120
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(n => n.title)
+  assert(titles.includes('Testi mesti'))
+})
+
 
 
 after(async () => {
