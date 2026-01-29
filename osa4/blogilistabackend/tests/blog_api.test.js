@@ -27,6 +27,21 @@ test('all blogs are returned', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test('id is named id not _id', async () => {
+  const blog = new Blog({ 
+    title: "JS Patterns",
+    author: "miika valkonen",
+    url: "testi",
+    likes: 1
+  })
+
+  const saved = await blog.save()
+  const json = saved.toJSON()
+
+  assert.ok(json.id)
+  assert.strictEqual(json._id, undefined)
+})
+
 
 
 after(async () => {
