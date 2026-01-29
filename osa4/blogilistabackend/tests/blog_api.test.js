@@ -63,6 +63,19 @@ test('a blog can be added', async () => {
   assert(titles.includes('Testi mesti'))
 })
 
+test('if likes not given they will be set to zero', async () => {
+  const blog = new Blog({ 
+    title: "Tykkäys testi",
+    author: "miika valkonen",
+    url: "testi3",
+  })
+
+  const saved = await blog.save()
+  const json = saved.toJSON()
+
+  assert.ok(json.likes === 0)
+})
+
 
 
 after(async () => {
