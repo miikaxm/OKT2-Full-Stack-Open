@@ -76,6 +76,19 @@ test('if likes not given they will be set to zero', async () => {
   assert.ok(json.likes === 0)
 })
 
+test('if title or url not giving expect 400', async () => {
+  const newBlog = { 
+    author: "miika valkonen",
+    url: "testi4",
+    likes: 140
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 
 
 after(async () => {
