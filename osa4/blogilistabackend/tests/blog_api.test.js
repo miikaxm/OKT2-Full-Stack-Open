@@ -1,5 +1,5 @@
 const assert = require('node:assert')
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -87,6 +87,50 @@ test('if title or url not giving expect 400', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+})
+
+describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const titles = blogsAtEnd.map((b) => b.title)
+      assert(!titles.includes(blogToDelete.title))
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+    })
+  })
+
+describe('editing a blog', () => {
+  test('blog can be updated with PUT', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedData = {
+    title: 'Testi päivitys titleen',
+    author: 'Updated author',
+    url: 'http://updated.com',
+    likes: 10
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedData)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+
+  assert.strictEqual(updatedBlog.title, updatedData.title)
+  assert.strictEqual(updatedBlog.likes, updatedData.likes)
+})
+
+
 })
 
 
