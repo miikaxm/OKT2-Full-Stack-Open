@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json; charset=utf-8
 
 {
-    "title": "Testi blogi numero 4",
+    "title": "Test blog number two",
     "author": "Miika Valkonen",
-    "url": "Testi urli 4",
-    "likes": 55000
+    "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    "likes": 6500,
+    "userId": "69805809f4fccd2ea11e9a8f"
 }
