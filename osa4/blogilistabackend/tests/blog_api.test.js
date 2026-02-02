@@ -8,12 +8,28 @@ const Blog = require('../models/blog')
 const { initialBlogs } = require('./test_helper')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const { request } = require('node:http')
+const jwt = require('jsonwebtoken')
+let token;
 
 const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+
+  const user = new User({ username: 'testuser', passwordHash: 'salasanaHash' })
+  await user.save()
+
+  const userForToken = { username: user.username, id: user._id }
+  token = jwt.sign(userForToken, process.env.SECRET)
+
+  const blogObjects = initialBlogs.map(blog => ({
+    ...blog,
+    user: user._id
+  }))
+  const blogDocs = blogObjects.map(blog => new Blog(blog))
+  await Promise.all(blogDocs.map(blog => blog.save()))
 })
 
 test('blogs are returned as json', async () => {
@@ -45,7 +61,7 @@ test('id is named id not _id', async () => {
 })
 
 test('a blog can be added', async () => {
-  const newBlog = { 
+  const newBlog = {
     title: "Testi mesti",
     author: "miika valkonen",
     url: "testi2",
@@ -54,6 +70,7 @@ test('a blog can be added', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`) 
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -63,6 +80,25 @@ test('a blog can be added', async () => {
 
   const titles = blogsAtEnd.map(n => n.title)
   assert(titles.includes('Testi mesti'))
+})
+
+test('creation fails with proper statuscode and message if token is not given', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const newBlog = {
+    title: "Testi mesti",
+    author: "miika valkonen",
+    url: "testi2",
+    likes: 120
+  }
+
+  const result = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 })
 
 test('if likes not given they will be set to zero', async () => {
@@ -87,6 +123,7 @@ test('if title or url not giving expect 400', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`) 
     .send(newBlog)
     .expect(400)
 })
@@ -96,7 +133,11 @@ describe('deletion of a blog', () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
+        
 
       const blogsAtEnd = await helper.blogsInDb()
 
@@ -248,8 +289,6 @@ describe('when there is initially one user at db', () => {
       assert.strictEqual(usersAtEnd.length, usersAtStart.length)
     })
   })
-
-
 
 after(async () => {
   await mongoose.connection.close()
