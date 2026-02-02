@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json; charset=utf-8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRva2VuVGVzdFVzZXIiLCJpZCI6IjY5ODA1YjdjYjJlMTA4NzViNjY2ZDk5MCIsImlhdCI6MTc3MDAxOTcyMH0.PLRwmGGyoCyAlpR6pGe3fSwJglQ89eXzt8MLuhVQVmg
 
 {
-    "title": "Test blog number two",
+    "title": "token test",
     "author": "Miika Valkonen",
     "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    "likes": 6500,
-    "userId": "69805809f4fccd2ea11e9a8f"
+    "likes": 1
 }

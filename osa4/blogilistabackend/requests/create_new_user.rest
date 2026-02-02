@@ -2,7 +2,7 @@ POST http://localhost:3003/api/users
 Content-Type: application/json; charset=utf-8
 
 {
-    "username": "miikaTesti",
+    "username": "TokenTestUser",
     "password": "salainen",
-    "name": "Miika Valkonen"
+    "name": "Tokensupertest"
 }
