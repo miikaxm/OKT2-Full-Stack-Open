@@ -5,4 +5,4 @@
 
 # Blogilista
 
-[Linkki sivuille]()
+[Linkki sivuille](https://okt2-full-stack-open.onrender.com/)
