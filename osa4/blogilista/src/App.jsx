@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Blogform from './components/Blogform'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,7 @@ const App = () => {
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -83,40 +85,27 @@ const App = () => {
   }
 
   const blogForm = () => {
-    return(
-      <form onSubmit={addBlog}>
+    const hideWhenVisible = { display: blogFormVisible ? 'none' : ''}
+    const showWhenVisible = { display: blogFormVisible ? '' : 'none'}
+
+    return (
       <div>
-        <label>
-          title:
-          <input
-           type="text"
-           value={newTitle}
-           onChange={({ target }) => setNewTitle(target.value)}
-           />
-        </label>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setBlogFormVisible(true)}>create new blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <Blogform
+            addBlog={addBlog}
+            newTitle={newTitle}
+            setNewTitle={setNewTitle}
+            newAuthor={newAuthor}
+            setNewAuthor={setNewAuthor}
+            newUrl={newUrl}
+            setNewUrl={setNewUrl}
+          />
+          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        <label>
-          author:
-          <input
-           type="text"
-           value={newAuthor}
-           onChange={({ target }) => setNewAuthor(target.value)}
-           />
-        </label>
-      </div>
-      <div>
-        <label>
-          url:
-          <input
-           type="text"
-           value={newUrl}
-           onChange={({ target }) => setNewUrl(target.value)}
-           />
-        </label>
-      </div>
-      <button type='submit'>create</button>
-    </form>
     )
   }
   
