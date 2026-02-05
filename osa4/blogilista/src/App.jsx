@@ -98,6 +98,30 @@ const App = () => {
       </div>
     )
   }
+
+  // Blogin tykkäys
+  const likedBlog = blog => {
+  const changedBlog = {
+    ...blog,
+    likes: blog.likes + 1
+  }
+
+  blogService
+    .update(blog.id, changedBlog)
+    .then(returnedBlog => {
+      setBlogs(prevBlogs => prevBlogs.map(b => b.id !== blog.id ? b : returnedBlog))
+    })
+    .catch(() => {
+      setErrorMessage(
+        `Blog ${blog.title} was already removed from the server`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
+    })
+}
+
   
   // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
   if (user === null) {
@@ -141,7 +165,7 @@ const App = () => {
       <h2>create new</h2>
       {blogForm()}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} like={likedBlog} />
       )}
     </div>
   )
