@@ -67,18 +67,20 @@ const App = () => {
   // Funktio uuden blogin luonnille
   const addBlog = (blogObject) => {
   blogService.create(blogObject).then(returnedBlog => {
-    setBlogs(blogs.concat(returnedBlog))
+    const blogWithUser = {
+        ...returnedBlog,
+        user: returnedBlog.user.username ? returnedBlog.user : {
+        username: user.username,
+        name: user.name,
+        id: user.id
+      }
+    }
 
-    setErrorMessage(
-      `a new blog ${blogObject.title} by ${blogObject.author} added`
-    )
-
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
+    setBlogs(prevBlogs => prevBlogs.concat(blogWithUser))
+    setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+    setTimeout(() => setErrorMessage(null), 5000)
   })
 }
-
 
   // Blogin luonti formi
   const blogForm = () => {
@@ -121,7 +123,16 @@ const App = () => {
       }, 5000)
       setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
     })
-}
+  }
+
+  // Blogin poistaminen
+  const remove = blog => {
+    window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    blogService
+      .remove(blog.id)
+      setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
+  }
+
 
   
   // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
@@ -166,7 +177,7 @@ const App = () => {
       <h2>create new</h2>
       {blogForm()}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} like={likedBlog} />
+        <Blog key={blog.id} blog={blog} like={likedBlog} user={user} remove={remove} />
       )}
     </div>
   )
