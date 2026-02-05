@@ -6,22 +6,21 @@ import Notification from './components/Notification'
 import Blogform from './components/Blogform'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogFormVisible, setBlogFormVisible] = useState(false)
+  const [blogs, setBlogs] = useState([])
 
+  // useEffect kaikkien blogien hakuun sivulle
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
   }, [])
 
+  // useEffect tarkistamaan löytyykö localstoragesta jo kirjautunut käyttäjä
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
@@ -31,6 +30,7 @@ const App = () => {
     }
   }, [])
 
+  // Funktio kirjautumisen käsittelyyn
   const handleLogin = async event => {
     event.preventDefault()
 
@@ -57,33 +57,29 @@ const App = () => {
     }
   }
 
+  // Funktio ulos kirjautumisen käsittelyyn
   const handleLogOff = () => {
     setUser(null)
     localStorage.clear()
   }
 
-  const addBlog = event => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
+  // Funktio uuden blogin luonnille
+  const addBlog = (blogObject) => {
+  blogService.create(blogObject).then(returnedBlog => {
+    setBlogs(blogs.concat(returnedBlog))
 
-    blogService.create(blogObject).then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
-      setNewAuthor('')
-      setNewTitle('')
-      setNewUrl('')
-      setErrorMessage(
-          `a new blog ${blogObject.title} by ${blogObject.author} added`
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-    })
-  }
+    setErrorMessage(
+      `a new blog ${blogObject.title} by ${blogObject.author} added`
+    )
 
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
+  })
+}
+
+
+  // Blogin luonti formi
   const blogForm = () => {
     const hideWhenVisible = { display: blogFormVisible ? 'none' : ''}
     const showWhenVisible = { display: blogFormVisible ? '' : 'none'}
@@ -95,13 +91,7 @@ const App = () => {
         </div>
         <div style={showWhenVisible}>
           <Blogform
-            addBlog={addBlog}
-            newTitle={newTitle}
-            setNewTitle={setNewTitle}
-            newAuthor={newAuthor}
-            setNewAuthor={setNewAuthor}
-            newUrl={newUrl}
-            setNewUrl={setNewUrl}
+            createBlog={addBlog}
           />
           <button onClick={() => setBlogFormVisible(false)}>cancel</button>
         </div>
@@ -109,6 +99,7 @@ const App = () => {
     )
   }
   
+  // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
   if (user === null) {
     return (
       <div>
@@ -141,6 +132,7 @@ const App = () => {
     )
   }
 
+  // Jos käyttäjä on kirjautunut näytetään koko sivu
   return (
     <div>
       <h2>blogs</h2>
