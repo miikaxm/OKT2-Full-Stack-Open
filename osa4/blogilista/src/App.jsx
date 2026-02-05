@@ -15,9 +15,10 @@ const App = () => {
 
   // useEffect kaikkien blogien hakuun sivulle
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      const sorted = blogs.sort((a, b) => b.likes - a.likes)
+      setBlogs( sorted )
+    })
   }, [])
 
   // useEffect tarkistamaan löytyykö localstoragesta jo kirjautunut käyttäjä
@@ -29,7 +30,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
+ 
   // Funktio kirjautumisen käsittelyyn
   const handleLogin = async event => {
     event.preventDefault()
