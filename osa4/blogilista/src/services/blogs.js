@@ -7,11 +7,13 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
+// Kaikkien blogien hakeminen
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
 }
 
+// Uuden blogin luonti
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: token }
@@ -21,12 +23,13 @@ const create = async (newObject) => {
   return response.data
 }
 
-
+// Blogin päivitys id:n perusteella
 const update = (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject)
   return request.then(response => response.data)
 }
 
+// Blogin päivitys id:n perusteella
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token }

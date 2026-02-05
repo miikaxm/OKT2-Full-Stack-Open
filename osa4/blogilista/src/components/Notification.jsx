@@ -3,12 +3,12 @@ const Notification = ({ message }) => {
     return null
   }
 
-  if (message.includes("a new")) {
+  if (message.includes('a new')) {
     return <div className="notError">{message}</div>
   } else {
     return <div className="error">{message}</div>
   }
-  
+
 }
 
 export default Notification

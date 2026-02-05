@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, like, user, remove }) => {
   const [visible, setVisible] = useState(false)
@@ -6,6 +6,7 @@ const Blog = ({ blog, like, user, remove }) => {
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
+  // Tyylejä
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -19,27 +20,29 @@ const Blog = ({ blog, like, user, remove }) => {
     borderRadius: 5,
   }
 
+  // Remove buttoni blogeihin jotka on luonut sisään kirjautunut käyttäjä
   if (user.username === blog.user?.username) {
     return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible}>
-        {blog.title} {blog.author}
-        <button onClick={() => setVisible(true)}>view</button>
+      <div style={blogStyle}>
+        <div style={hideWhenVisible}>
+          {blog.title} {blog.author}
+          <button onClick={() => setVisible(true)}>view</button>
+        </div>
+
+        <div style={showWhenVisible}>
+          {blog.title}
+          <button onClick={() => setVisible(false)}>hide</button>
+
+          <div>{blog.url}</div>
+          <div>likes {blog.likes} <button onClick={() => like(blog)}>like</button></div>
+          <div>{blog.author}</div>
+          <button style={removeBtn} onClick={() => remove(blog)}>remove</button>
+        </div>
       </div>
+    )
+  }
 
-      <div style={showWhenVisible}>
-        {blog.title}
-        <button onClick={() => setVisible(false)}>hide</button>
-
-        <div>{blog.url}</div>
-        <div>likes {blog.likes} <button onClick={() => like(blog)}>like</button></div>
-        <div>{blog.author}</div>
-        <button style={removeBtn} onClick={() => remove(blog)}>remove</button>
-      </div>
-    </div>
-  )
-}
-
+  // Ilman remove buttonia olevat
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
@@ -58,7 +61,7 @@ const Blog = ({ blog, like, user, remove }) => {
     </div>
   )
 }
-  
+
 
 
 export default Blog

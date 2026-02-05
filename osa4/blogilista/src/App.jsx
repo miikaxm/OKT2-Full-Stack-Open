@@ -30,7 +30,7 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
- 
+
   // Funktio kirjautumisen käsittelyyn
   const handleLogin = async event => {
     event.preventDefault()
@@ -45,16 +45,16 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     } catch {
       setErrorMessage(
-        `wrong username or password`
+        'wrong username or password'
       )
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000);
+      }, 5000)
     }
   }
 
@@ -66,26 +66,26 @@ const App = () => {
 
   // Funktio uuden blogin luonnille
   const addBlog = (blogObject) => {
-  blogService.create(blogObject).then(returnedBlog => {
-    const blogWithUser = {
+    blogService.create(blogObject).then(returnedBlog => {
+      const blogWithUser = {
         ...returnedBlog,
         user: returnedBlog.user.username ? returnedBlog.user : {
-        username: user.username,
-        name: user.name,
-        id: user.id
+          username: user.username,
+          name: user.name,
+          id: user.id
+        }
       }
-    }
 
-    setBlogs(prevBlogs => prevBlogs.concat(blogWithUser))
-    setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
-    setTimeout(() => setErrorMessage(null), 5000)
-  })
-}
+      setBlogs(prevBlogs => prevBlogs.concat(blogWithUser))
+      setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+      setTimeout(() => setErrorMessage(null), 5000)
+    })
+  }
 
   // Blogin luonti formi
   const blogForm = () => {
-    const hideWhenVisible = { display: blogFormVisible ? 'none' : ''}
-    const showWhenVisible = { display: blogFormVisible ? '' : 'none'}
+    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
+    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
 
     return (
       <div>
@@ -104,25 +104,25 @@ const App = () => {
 
   // Blogin tykkäys
   const likedBlog = blog => {
-  const changedBlog = {
-    ...blog,
-    likes: blog.likes + 1
-  }
+    const changedBlog = {
+      ...blog,
+      likes: blog.likes + 1
+    }
 
-  blogService
-    .update(blog.id, changedBlog)
-    .then(returnedBlog => {
-      setBlogs(prevBlogs => prevBlogs.map(b => b.id !== blog.id ? b : returnedBlog))
-    })
-    .catch(() => {
-      setErrorMessage(
-        `Blog ${blog.title} was already removed from the server`
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-      setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
-    })
+    blogService
+      .update(blog.id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(prevBlogs => prevBlogs.map(b => b.id !== blog.id ? b : returnedBlog))
+      })
+      .catch(() => {
+        setErrorMessage(
+          `Blog ${blog.title} was already removed from the server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
+      })
   }
 
   // Blogin poistaminen
@@ -130,11 +130,11 @@ const App = () => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     blogService
       .remove(blog.id)
-      setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
+    setBlogs(prevBlogs => prevBlogs.filter(b => b.id !== blog.id))
   }
 
 
-  
+
   // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
   if (user === null) {
     return (
@@ -146,19 +146,19 @@ const App = () => {
             <label>
               username
               <input
-               type="text"
-               value={username}
-               onChange={({ target }) => setUsername(target.value)} 
+                type="text"
+                value={username}
+                onChange={({ target }) => setUsername(target.value)}
               />
             </label>
           </div>
-            <div>
+          <div>
             <label>
               password
               <input
-               type="password"
-               value={password}
-               onChange={({ target }) => setPassword(target.value)} 
+                type="password"
+                value={password}
+                onChange={({ target }) => setPassword(target.value)}
               />
             </label>
           </div>
