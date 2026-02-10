@@ -23,7 +23,7 @@ test('renders content', () => {
   expect(element).toBeDefined()
 })
 
-test('clicking like calls handler once', async () => {
+test('checks if everything is rendered after more info is displayed', async () => {
   const blog = {
     title: 'Test',
     author: 'Miika',
@@ -60,4 +60,39 @@ test('clicking like calls handler once', async () => {
   expect(url).toBeDefined()
   expect(likes).toBeDefined()
   expect(likes).toBeDefined()
+})
+
+test('clikcing like twice calls handler twice', async () => {
+  const blog = {
+    title: 'Test',
+    author: 'Miika',
+    url: 'test',
+    likes: "2",
+    user: { username: 'testuser' }
+  }
+
+  const userObj = {
+    username: 'testuser'
+  }
+
+  const mockHandler = vi.fn()
+
+  render(
+    <Blog
+      blog={blog}
+      user={userObj}
+      like={mockHandler}
+    />
+  )
+
+  const user = userEvent.setup()
+
+  // Avaa näkymä
+  await user.click(screen.getByText('view'))
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler).toHaveBeenCalledTimes(2)
 })
