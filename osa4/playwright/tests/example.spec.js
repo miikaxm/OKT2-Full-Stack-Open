@@ -5,6 +5,13 @@ describe('Blog app', () => {
     await request.post('http://localhost:3003/api/testing/reset')
     await request.post('http://localhost:3003/api/users', {
       data: {
+        name: 'Miika Valkonen',
+        username: 'mvalkonen',
+        password: 'salainen'
+      }
+    })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
         name: 'Matti Luukkainen',
         username: 'mluukkai',
         password: 'salainen'
@@ -84,6 +91,20 @@ describe('Blog app', () => {
       })
 
       await expect(blogText).not.toBeVisible()
+    })
+
+    test('blogs delete button is hidden for user who didnt create it', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await page.getByPlaceholder('write title here').fill('blog created by playwright')
+      await page.getByPlaceholder('write author here').fill('playwright')
+      await page.getByPlaceholder('write url here').fill('playwright.com')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.getByRole('button', { name: 'log off' }).click()
+      await page.getByLabel('username').fill('mvalkonen')
+      await page.getByLabel('password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('remove')).not.toBeVisible()
     })
   })
 })
