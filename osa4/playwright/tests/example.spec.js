@@ -37,7 +37,7 @@ describe('Blog app', () => {
     })
   })
 
-  describe('Wehn logged in', () => {
+  describe('When logged in', () => {
     beforeEach(async ({ page }) => {
       await page.getByLabel('username').fill('mluukkai')
       await page.getByLabel('password').fill('salainen')
@@ -68,6 +68,22 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('likes 1')).toBeVisible()
+    })
+
+    test('a blog can be deleted by user who created it', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      await page.getByPlaceholder('write title here').fill('blog created by playwright')
+      await page.getByPlaceholder('write author here').fill('playwright')
+      await page.getByPlaceholder('write url here').fill('playwright.com')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'remove' }).click()
+
+      const blogText = page.getByText('blog created by playwright').filter({
+        has: page.getByRole('button', { name: 'view' }),
+      })
+
+      await expect(blogText).not.toBeVisible()
     })
   })
 })
