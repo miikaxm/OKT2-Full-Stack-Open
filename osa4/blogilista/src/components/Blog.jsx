@@ -23,7 +23,7 @@ const Blog = ({ blog, like, user, remove }) => {
   // Remove buttoni blogeihin jotka on luonut sisään kirjautunut käyttäjä
   if (user.username === blog.user?.username) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blog">
         <div style={hideWhenVisible}>
           {blog.title}
           <button onClick={() => setVisible(true)}>view</button>
@@ -44,7 +44,7 @@ const Blog = ({ blog, like, user, remove }) => {
 
   // Ilman remove buttonia olevat
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div style={hideWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(true)}>view</button>

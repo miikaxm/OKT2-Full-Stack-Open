@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -30,33 +31,23 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByLabel('username').fill('mluukkai')
-      await page.getByLabel('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
       await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByLabel('username').fill('mluukkai')
-      await page.getByLabel('password').fill('wrong')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'wrong')
       await expect(page.getByText('wrong username or password')).toBeVisible()
     })
   })
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByLabel('username').fill('mluukkai')
-      await page.getByLabel('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mluukkai', 'salainen')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await page.getByRole('button', { name: 'create new blog' }).click()
-      await page.getByPlaceholder('write title here').fill('blog created by playwright')
-      await page.getByPlaceholder('write author here').fill('playwright')
-      await page.getByPlaceholder('write url here').fill('playwright.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'blog created by playwright', 'playwright', 'playwright.com')
       await expect(page.getByText('a new blog blog created by playwright by playwright added')).toBeVisible()
       
       const blogText = page.getByText('blog created by playwright').filter({
@@ -67,22 +58,14 @@ describe('Blog app', () => {
     })
 
     test('a blog can be liked', async ({ page }) => {
-      await page.getByRole('button', { name: 'create new blog' }).click()
-      await page.getByPlaceholder('write title here').fill('blog created by playwright')
-      await page.getByPlaceholder('write author here').fill('playwright')
-      await page.getByPlaceholder('write url here').fill('playwright.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'blog created by playwright', 'playwright', 'playwright.com')
       await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('likes 1')).toBeVisible()
     })
 
     test('a blog can be deleted by user who created it', async ({ page }) => {
-      await page.getByRole('button', { name: 'create new blog' }).click()
-      await page.getByPlaceholder('write title here').fill('blog created by playwright')
-      await page.getByPlaceholder('write author here').fill('playwright')
-      await page.getByPlaceholder('write url here').fill('playwright.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'blog created by playwright', 'playwright', 'playwright.com')
       await page.getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'remove' }).click()
 
@@ -94,17 +77,47 @@ describe('Blog app', () => {
     })
 
     test('blogs delete button is hidden for user who didnt create it', async ({ page }) => {
-      await page.getByRole('button', { name: 'create new blog' }).click()
-      await page.getByPlaceholder('write title here').fill('blog created by playwright')
-      await page.getByPlaceholder('write author here').fill('playwright')
-      await page.getByPlaceholder('write url here').fill('playwright.com')
-      await page.getByRole('button', { name: 'create' }).click()
+      await createBlog(page, 'blog created by playwright', 'playwright', 'playwright.com')
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('remove')).toBeVisible()
       await page.getByRole('button', { name: 'log off' }).click()
-      await page.getByLabel('username').fill('mvalkonen')
-      await page.getByLabel('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()
+      await loginWith(page, 'mvalkonen', 'salainen')
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByText('remove')).not.toBeVisible()
+    })
+
+    test('the blogs are sorted by likes', async ({ page }) => {
+      const blog = (title) =>
+        page.locator('.blog').filter({ hasText: title })
+
+      const likeBlog = async (title, times) => {
+        const blogItem = blog(title)
+
+        await blogItem.getByRole('button', { name: 'view' }).click()
+
+        const likeButton = blogItem.getByRole('button', { name: 'like' })
+
+        for (let i = 0; i < times; i++) {
+          await Promise.all([
+            page.waitForResponse(res => res.status() === 200),
+            likeButton.click()
+          ])
+        }
+      }
+
+      await createBlog(page, 'First blog', 'Author 1', 'first.com')
+      await createBlog(page, 'Second blog', 'Author 2', 'second.com')
+      await createBlog(page, 'Third blog', 'Author 3', 'third.com')
+
+      await likeBlog('First blog', 1)
+      await likeBlog('Second blog', 9)
+      await likeBlog('Third blog', 5)
+
+      const blogs = await page.locator('.blog').allTextContents()
+
+      expect(blogs[0]).toContain('Second blog')
+      expect(blogs[1]).toContain('Third blog')
+      expect(blogs[2]).toContain('First blog')
     })
   })
 })

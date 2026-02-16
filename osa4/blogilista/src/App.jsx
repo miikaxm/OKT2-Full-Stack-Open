@@ -112,7 +112,13 @@ const App = () => {
     blogService
       .update(blog.id, changedBlog)
       .then(returnedBlog => {
-        setBlogs(prevBlogs => prevBlogs.map(b => b.id !== blog.id ? b : returnedBlog))
+        setBlogs(prevBlogs => {
+          const updatedBlogs = prevBlogs.map(b =>
+            b.id !== blog.id ? b : returnedBlog
+          )
+
+          return updatedBlogs.sort((a, b) => b.likes - a.likes)
+        })
       })
       .catch(() => {
         setErrorMessage(
