@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json; charset=utf-8
+Authorization: Bearer
+
+{
+    "title": "middleware test 2",
+    "author": "Miika Valkonen",
+    "url": "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    "likes": 15
+}
