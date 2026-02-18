@@ -1,8 +1,4 @@
 # OKT2-Full-Stack-Open
-# Puhelinluettelo
+# Puhelinluettelo Backend
 
 [Linkki sivuille](https://puhelinluettelo-aqdv.onrender.com/)
-
-# Blogilista
-
-[Linkki sivuille](https://okt2-full-stack-open.onrender.com/)
