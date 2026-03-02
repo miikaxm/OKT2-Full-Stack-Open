@@ -5,7 +5,7 @@ import anecdoteReducer from './reducers/anecdoteReducer'
 
 const store = configureStore({
   reducer: {
-    notes: anecdoteReducer,
+    anecdotes: anecdoteReducer,
     filter: filterReducer,
   }
 })
