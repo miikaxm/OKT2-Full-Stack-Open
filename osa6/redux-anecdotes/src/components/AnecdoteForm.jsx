@@ -12,10 +12,7 @@ const AnecdoteForm = () => {
       dispatch(appendAnecdote(content))
 
       // Notification of creation of new anecdote with 5 sec cooldown
-      dispatch(setNotification(`You added new anecdote '${content}'`))
-      setTimeout(() => {
-        dispatch(setNotification(''))
-      }, 5000)
+      dispatch(setNotification(`you created '${content}'`, 10))
   }
 
   return (
