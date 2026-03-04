@@ -1,0 +1,59 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "awd",
+      "id": 3
+    },
+    {
+      "content": "testi",
+      "id": 4
+    },
+    {
+      "content": "tämä on vain testi",
+      "id": 5
+    },
+    {
+      "content": "awd",
+      "id": 6
+    },
+    {
+      "content": "awd",
+      "id": 7
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "awd",
+      "number": "awd",
+      "id": 3
+    },
+    {
+      "name": "mluukkai",
+      "number": "0402190036",
+      "id": 4
+    },
+    {
+      "name": "testi",
+      "number": "testi",
+      "id": 5
+    }
+  ]
+}
