@@ -65,7 +65,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+const CreateNew = ({props}) => {
   const navigate = useNavigate()
 
   const content = useField('text')
@@ -83,27 +83,33 @@ const CreateNew = (props) => {
     navigate('/anecdotes')
   }
 
+  const handleReset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onReset={handleReset}>
         <div>
           content
           <input {...content}/>
         </div>
         <div>
           author
-          <input type={author.type} value={author.value} onChange={author.onChange} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input type={info.type} value={info.value} onChange={info.onChange} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='reset'>reset</button>
       </form>
     </div>
   )
-
 }
 
 const App = () => {
