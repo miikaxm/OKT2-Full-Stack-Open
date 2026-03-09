@@ -1,29 +1,32 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
 import { setNotification } from "./reducers/notificationReducer";
+import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
+import { applyMiddleware } from "@reduxjs/toolkit";
 
 const App = () => {
   const dispatch = useDispatch()
+
+  // React tilat
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [blogFormVisible, setBlogFormVisible] = useState(false);
-  const [blogs, setBlogs] = useState([]);
 
-
-
-  // useEffect kaikkien blogien hakuun sivulle
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const sorted = blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sorted);
-    });
-  }, []);
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  const blogs = useSelector(state => {
+
+    return [...state.blogs]
+      .sort((a, b) => b.likes - a.likes)
+  })
 
   // useEffect tarkistamaan löytyykö localstoragesta jo kirjautunut käyttäjä
   useEffect(() => {
@@ -60,21 +63,8 @@ const App = () => {
 
   // Funktio uuden blogin luonnille
   const addBlog = (blogObject) => {
-    blogService.create(blogObject).then((returnedBlog) => {
-      const blogWithUser = {
-        ...returnedBlog,
-        user: returnedBlog.user.username
-          ? returnedBlog.user
-          : {
-              username: user.username,
-              name: user.name,
-              id: user.id,
-            },
-      };
-
-      setBlogs((prevBlogs) => prevBlogs.concat(blogWithUser));
+      dispatch(appendBlog(blogObject))
       dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 5))
-    });
   };
 
   // Blogin luonti formi
@@ -99,33 +89,13 @@ const App = () => {
 
   // Blogin tykkäys
   const likedBlog = (blog) => {
-    const changedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-
-    blogService
-      .update(blog.id, changedBlog)
-      .then((returnedBlog) => {
-        setBlogs((prevBlogs) => {
-          const updatedBlogs = prevBlogs.map((b) =>
-            b.id !== blog.id ? b : returnedBlog,
-          );
-
-          return updatedBlogs.sort((a, b) => b.likes - a.likes);
-        });
-      })
-      .catch(() => {
-        dispatch(setNotification(`Blog ${blog.title} was already removed from the server`, 5))
-        setBlogs((prevBlogs) => prevBlogs.filter((b) => b.id !== blog.id));
-      });
+    dispatch(blogLike(blog.id))
   };
 
   // Blogin poistaminen
   const remove = (blog) => {
     window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-    blogService.remove(blog.id);
-    setBlogs((prevBlogs) => prevBlogs.filter((b) => b.id !== blog.id));
+    dispatch(deleteBlog(blog.id))
   };
 
   // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
