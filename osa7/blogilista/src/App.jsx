@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
+import { setNotification } from "./reducers/notificationReducer";
 
 const App = () => {
+  const dispatch = useDispatch()
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [blogFormVisible, setBlogFormVisible] = useState(false);
   const [blogs, setBlogs] = useState([]);
+
+
 
   // useEffect kaikkien blogien hakuun sivulle
   useEffect(() => {
@@ -43,14 +47,8 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
     } catch {
-      setErrorMessage("wrong username or password");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      dispatch(setNotification('Wrong password or username', 5)) 
     }
   };
 
@@ -75,10 +73,7 @@ const App = () => {
       };
 
       setBlogs((prevBlogs) => prevBlogs.concat(blogWithUser));
-      setErrorMessage(
-        `a new blog ${blogObject.title} by ${blogObject.author} added`,
-      );
-      setTimeout(() => setErrorMessage(null), 5000);
+      dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 5))
     });
   };
 
@@ -121,12 +116,7 @@ const App = () => {
         });
       })
       .catch(() => {
-        setErrorMessage(
-          `Blog ${blog.title} was already removed from the server`,
-        );
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
+        dispatch(setNotification(`Blog ${blog.title} was already removed from the server`, 5))
         setBlogs((prevBlogs) => prevBlogs.filter((b) => b.id !== blog.id));
       });
   };
@@ -143,7 +133,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} />
+        <Notification/>
         <form onSubmit={handleLogin}>
           <div>
             <label>
@@ -175,7 +165,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={errorMessage} />
+      <Notification/>
       <h3>
         {user.name} logged in{" "}
         <button onClick={handleLogOff}>log off</button>{" "}
