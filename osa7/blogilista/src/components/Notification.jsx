@@ -1,3 +1,4 @@
+import { Alert } from "react-bootstrap";
 import { useSelector } from "react-redux"
 
 const Notification = () => {
@@ -8,9 +9,9 @@ const Notification = () => {
   }
 
   if (notification.message.includes("a new")) {
-    return <div className="notError">{notification.message}</div>;
+    return <Alert variant="success">{notification.message}</Alert>
   } else {
-    return <div className="error">{notification.message}</div>;
+    return <Alert variant="danger">{notification.message}</Alert>
   }
 };
 

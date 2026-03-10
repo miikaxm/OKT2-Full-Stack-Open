@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import userService from '../services/users'
+import { Container, Card, ListGroup, Spinner } from "react-bootstrap"
+import userService from "../services/users"
 
 const User = () => {
-  const { id } = useParams()        // <-- get :id from route
+  const { id } = useParams()
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -12,18 +13,36 @@ const User = () => {
     })
   }, [id])
 
-  if (!user) return <div>Loading...</div>
+  if (!user) {
+    return (
+      <Container className="mt-3">
+        <Spinner animation="border" />
+      </Container>
+    )
+  }
 
   return (
-    <div>
-      <h1>{user.name}</h1>
-      <h2>added blogs</h2>
-      <ul>
-        {user.blogs.map(blog => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
-    </div>
+    <Container className="mt-3">
+      <Card>
+        <Card.Body>
+
+          <Card.Title>{user.name}</Card.Title>
+
+          <Card.Subtitle className="mb-3 text-muted">
+            Added blogs
+          </Card.Subtitle>
+
+          <ListGroup>
+            {user.blogs.map(blog => (
+              <ListGroup.Item key={blog.id}>
+                {blog.title}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+
+        </Card.Body>
+      </Card>
+    </Container>
   )
 }
 

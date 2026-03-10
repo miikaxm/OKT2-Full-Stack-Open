@@ -1,39 +1,19 @@
-import { useState } from "react";
+import { Card, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-import {
-  BrowserRouter as Router,
-  Routes, Route, Link
-} from 'react-router-dom'
+const Blog = ({ blog }) => {
 
-const Blog = ({ blog, like, user, remove }) => {
-
-  // Styles
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  // Remove buttoni blogeihin jotka on luonut sisään kirjautunut käyttäjä
-  if (user.username === blog.user?.username) {
-    return (
-      <div style={blogStyle} className="blog">
-        <div>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </div>
-      </div>
-    );
-  }
-
-  // Ilman remove buttonia olevat
   return (
-    <div style={blogStyle} className="blog">
-      <div>
-        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-      </div>
-    </div>
+    <Card className="mb-2">
+      <Card.Body className="d-flex justify-content-between align-items-center">
+
+        <Card.Title className="mb-0">
+          <Link to={`/blogs/${blog.id}`} style={{ textDecoration: "none" }}>
+            {blog.title}
+          </Link>
+        </Card.Title>
+      </Card.Body>
+    </Card>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Form, Button, Card } from "react-bootstrap";
 
 const Blogform = ({ createBlog }) => {
   const [newTitle, setNewTitle] = useState("");
@@ -14,46 +15,55 @@ const Blogform = ({ createBlog }) => {
       url: newUrl,
     });
 
-    // tyhjennetään kentät
     setNewTitle("");
     setNewAuthor("");
     setNewUrl("");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        title:
-        <input
-          type="text"
-          value={newTitle}
-          onChange={({ target }) => setNewTitle(target.value)}
-          placeholder="write title here"
-        />
-      </div>
+    <Card className="mb-3">
+      <Card.Body>
+        <Card.Title>Add new blog</Card.Title>
 
-      <div>
-        author:
-        <input
-          type="text"
-          value={newAuthor}
-          onChange={({ target }) => setNewAuthor(target.value)}
-          placeholder="write author here"
-        />
-      </div>
+        <Form onSubmit={handleSubmit}>
 
-      <div>
-        url:
-        <input
-          type="text"
-          value={newUrl}
-          onChange={({ target }) => setNewUrl(target.value)}
-          placeholder="write url here"
-        />
-      </div>
+          <Form.Group className="mb-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              value={newTitle}
+              placeholder="write title here"
+              onChange={({ target }) => setNewTitle(target.value)}
+            />
+          </Form.Group>
 
-      <button type="submit">create</button>
-    </form>
+          <Form.Group className="mb-3">
+            <Form.Label>Author</Form.Label>
+            <Form.Control
+              type="text"
+              value={newAuthor}
+              placeholder="write author here"
+              onChange={({ target }) => setNewAuthor(target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Url</Form.Label>
+            <Form.Control
+              type="text"
+              value={newUrl}
+              placeholder="write url here"
+              onChange={({ target }) => setNewUrl(target.value)}
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Create
+          </Button>
+
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

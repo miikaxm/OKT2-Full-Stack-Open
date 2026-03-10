@@ -1,67 +1,103 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import blogService from '../services/blogs'
+import { Card, Button, Form, ListGroup, Badge } from "react-bootstrap";
 import { commentBlog } from "../reducers/blogsReducer";
 
 const SingleBlogData = ({ like, remove }) => {
-  const dispatch = useDispatch()
-  const [comment, setComment] = useState("")
+  const dispatch = useDispatch();
+  const [comment, setComment] = useState("");
 
-  // Gets id from route
   const { id } = useParams();
 
-  // Style for remove button
-  const removeBtn = {
-    backgroundColor: "red",
-    borderRadius: 5,
-  };
-
-  // Get current user from redux store
-  const currentUser = useSelector(state => state.user)
-  
-  // Get blogs from redux store
+  const currentUser = useSelector(state => state.user);
   const blogs = useSelector(state => state.blogs);
 
-  // Find the single blog
   const blog = blogs.find(b => b.id === id);
 
-  // Checks if everything is loaded
   if (!blog) return <div>Loading blog...</div>;
   if (!blog.user) return <div>Loading blog user...</div>;
 
-  // Checks if current user is owner of the blog
   const isOwner = blog.user?.username === currentUser?.username;
 
   const addComment = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!comment) return;
 
     dispatch(commentBlog(blog.id, comment));
     setComment("");
-  }
-  
+  };
+
   return (
-    <div>
-      <h1>{blog.title}</h1>
-      <a href={blog.url}>{blog.url}</a>
-      <p>likes {blog.likes} <button onClick={() => like(blog)}>like</button></p>
-      <p>added by {blog.user.name}</p>
-      {isOwner && (
-        <button style={removeBtn} onClick={() => remove(blog)}>remove</button>
-      )}
-      <h2>comments</h2>
-      <form onSubmit={addComment}>
-        <input type="text" value={comment} onChange={(event) => setComment(event.target.value)} />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map(comment => (
-          <li key={comment}>{comment}</li>
-        ))}
-      </ul>
-    </div>
-  )
+    <Card>
+      <Card.Body>
+
+        <Card.Title>{blog.title}</Card.Title>
+
+        <Card.Text>
+          <a href={blog.url} target="_blank" rel="noopener noreferrer">
+            {blog.url}
+          </a>
+        </Card.Text>
+
+        <Card.Text>
+          <Badge bg="secondary" className="me-2">
+            likes {blog.likes}
+          </Badge>
+
+          <Button
+            variant="outline-primary"
+            size="sm"
+            onClick={() => like(blog)}
+          >
+            like
+          </Button>
+        </Card.Text>
+
+        <Card.Text>
+          added by <strong>{blog.user.name}</strong>
+        </Card.Text>
+
+        {isOwner && (
+          <Button
+            variant="danger"
+            size="sm"
+            className="mb-3"
+            onClick={() => remove(blog)}
+          >
+            remove
+          </Button>
+        )}
+
+        <hr />
+
+        <h4>Comments</h4>
+
+        <Form onSubmit={addComment} className="mb-3">
+          <Form.Group className="d-flex gap-2">
+            <Form.Control
+              type="text"
+              value={comment}
+              placeholder="write comment"
+              onChange={(event) => setComment(event.target.value)}
+            />
+            <Button type="submit" variant="primary">
+              add
+            </Button>
+          </Form.Group>
+        </Form>
+
+        <ListGroup>
+          {blog.comments.map((comment, index) => (
+            <ListGroup.Item key={index}>
+              {comment}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+
+      </Card.Body>
+    </Card>
+  );
 };
 
 export default SingleBlogData;
