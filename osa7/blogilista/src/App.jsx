@@ -23,7 +23,7 @@ import blogService from "./services/blogs";
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
 import { appendUser, loginUser } from "./reducers/userReducer";
-import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
+import { Button, Col, Container, Form, Nav, Navbar, Row, Card } from 'react-bootstrap';
 
 
 const App = () => {
@@ -124,32 +124,47 @@ const App = () => {
 
   // If user is not found, Site just shows login form
   if (!user) {
-    return (
-      <div className='container'>
-        <h2>Log in to application</h2>
-        <Notification />
-        <Form onSubmit={handleLogin}>
-          <Form.Group>
-            <Form.Label>username:</Form.Label>
-            <Form.Control
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>password:</Form.Label>
-            <Form.Control
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            login
-          </Button>
-        </Form>
-    </div>
+      return (
+        <Container className="mt-5">
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={6}>
+              <Card className="p-4 shadow-sm">
+                <Card.Body>
+                  <Card.Title className="mb-4 text-center">Log in to application</Card.Title>
+
+                  <Notification />
+
+                  <Form onSubmit={handleLogin}>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Username</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={username}
+                        onChange={({ target }) => setUsername(target.value)}
+                        placeholder="Enter username"
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        value={password}
+                        onChange={({ target }) => setPassword(target.value)}
+                        placeholder="Enter password"
+                      />
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit" className="w-100">
+                      Log in
+                    </Button>
+                  </Form>
+
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
     );
   }
 
@@ -171,6 +186,10 @@ const App = () => {
                   <Link className='linkStyle' to={'/users'}>users</Link>
                 </Nav.Link>
               </Nav>
+              <Navbar.Text>
+                Signed in as: <a href="#">{user.name}</a>
+              </Navbar.Text>
+              <Button className='m-3' variant="primary" onClick={handleLogOff}>Logout</Button>
             </Navbar.Collapse>
           </Container>
         </Navbar>
