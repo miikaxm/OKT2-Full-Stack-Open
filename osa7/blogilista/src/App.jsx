@@ -1,3 +1,9 @@
+// React router
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
+
 // Imports from react
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
+import Users from "./components/Users";
 
 // Services
 import blogService from "./services/blogs";
@@ -14,6 +21,7 @@ import blogService from "./services/blogs";
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
 import { appendUser, loginUser } from "./reducers/userReducer";
+
 
 const App = () => {
   // Dispatch and get user from redux state
@@ -146,25 +154,51 @@ const App = () => {
 
   // If user is found, shows the full page
   return (
-    <div>
-      <h2>blogs</h2>
-      <Notification/>
-      <h3>
-        {user.username} logged in{" "}
-        <button onClick={handleLogOff}>log off</button>{" "}
-      </h3>
-      <h2>create new</h2>
-      {blogForm()}
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          like={likedBlog}
-          user={user}
-          remove={remove}
+    <Router>
+
+     
+
+      {/* Normal stuff */}
+      <div>
+        <h2>blogs</h2>
+        <Notification/>
+        <h3>
+          {user.username} logged in{" "}
+          <button onClick={handleLogOff}>log off</button>{" "}
+        </h3>
+
+         {/* Routes */}
+        <Routes>
+        <Route
+          path="/users"
+          element={
+            <div>
+              <Users />
+            </div>
+          }
         />
-      ))}
-    </div>
+
+        <Route
+          path="/"
+          element={
+            <div>
+              <h2>create new</h2>
+              {blogForm()}
+              {blogs.map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  like={likedBlog}
+                  user={user}
+                  remove={remove}
+                />
+              ))}
+            </div>
+          }
+        />
+      </Routes>
+      </div>
+    </Router>
   );
 };
 
