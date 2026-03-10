@@ -1,23 +1,31 @@
+// Imports from react
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+// component imports
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
+
+// Services
+import blogService from "./services/blogs";
+
+// Reducers
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
 import { appendUser, loginUser } from "./reducers/userReducer";
 
 const App = () => {
+  // Dispatch and get user from redux state
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
 
-  // React tilat
+  // React states
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [blogFormVisible, setBlogFormVisible] = useState(false);
 
-  // Blogien läpi käynti näytölle
+  // Getting blogs from redux state and sorting them via likes
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
@@ -28,8 +36,9 @@ const App = () => {
       .sort((a, b) => b.likes - a.likes)
   })
 
-  // Kirjautumiseen liittyvät
-  // useEffect tarkistamaan löytyykö localstoragesta jo kirjautunut käyttäjä
+  /* Login based */
+
+  // Checks if loggedUser is found in localstorage
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
@@ -39,7 +48,7 @@ const App = () => {
     }
   }, [dispatch]);
 
-  // Funktio kirjautumisen käsittelyyn
+  // Logs in, saves user in localstorage
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -56,20 +65,21 @@ const App = () => {
     }
   };
 
-  // Funktio ulos kirjautumisen käsittelyyn
+  // sets current user to null and clears user from localstorage
   const handleLogOff = () => {
     dispatch(appendUser(null))
     localStorage.clear();
   };
 
-  // Blogin luontiin liittyvät
-  // Funktio uuden blogin luonnille
+  /* Create blog */
+
+  // pushes new blog to bloglist and sets notification about this action
   const addBlog = (blogObject) => {
       dispatch(appendBlog(blogObject))
       dispatch(setNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 5))
   };
 
-  // Blogin luonti formi
+  // Form for the blog creation
   const blogForm = () => {
     const hideWhenVisible = { display: blogFormVisible ? "none" : "" };
     const showWhenVisible = { display: blogFormVisible ? "" : "none" };
@@ -89,20 +99,19 @@ const App = () => {
     );
   };
 
-  // Blogin tykkäys
+  // Blog like
   const likedBlog = (blog) => {
     dispatch(blogLike(blog.id))
   };
 
-  // Blogin poistaminen
+  // Deletion of blog
   const remove = (blog) => {
-    window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
-    dispatch(deleteBlog(blog.id))
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      dispatch(deleteBlog(blog.id))
+    }
   };
 
-  // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
-  console.log("user state:", user)
-  
+  // If user is not found, Site just shows login form
   if (!user) {
     return (
       <div>
@@ -135,7 +144,7 @@ const App = () => {
     );
   }
 
-  // Jos käyttäjä on kirjautunut näytetään koko sivu
+  // If user is found, shows the full page
   return (
     <div>
       <h2>blogs</h2>
