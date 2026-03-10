@@ -40,12 +40,7 @@ usersRouter.post("/", async (request, response) => {
 
 // get by id
 usersRouter.get("/:id", async (request, response) => {
-  const user = await User.findById(request.params.id).populate("blogs", {
-    title: 1,
-    author: 1,
-    url: 1,
-    likes: 1,
-  });
+  const user = await User.findById(request.params.id).populate("blogs")
 
   if (!user) {
     return response.status(404).json({ error: "user not found" });
