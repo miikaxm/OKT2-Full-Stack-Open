@@ -21,6 +21,7 @@ import blogService from "./services/blogs";
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
 import { appendUser, loginUser } from "./reducers/userReducer";
+import User from './components/User';
 
 
 const App = () => {
@@ -176,7 +177,16 @@ const App = () => {
               <Users />
             </div>
           }
-        />
+          />
+          
+          <Route
+            path='/users/:id'
+            element={
+              <div>
+                <User/>  
+              </div>
+          }
+          />
 
         <Route
           path="/"
