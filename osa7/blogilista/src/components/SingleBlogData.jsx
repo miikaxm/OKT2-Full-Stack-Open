@@ -36,6 +36,12 @@ const SingleBlogData = ({ like, remove }) => {
       {isOwner && (
         <button style={removeBtn} onClick={() => remove(blog)}>remove</button>
       )}
+      <h2>comments</h2>
+      <ul>
+        {blog.comments.map(comment => (
+          <li key={comment}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 };

@@ -89,4 +89,26 @@ blogRouter.get("/:id", async (request, response) => {
   response.json(blog);
 });
 
+// POST comment
+blogRouter.post('/:id/comments', async (req, res) => {
+  const { comment } = req.body;
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) {
+    return res.status(404).json({ error: 'Blog not found' });
+  }
+
+  // Lisätään kommentti
+  blog.comments = blog.comments.concat(comment);
+  const updatedBlog = await blog.save();
+
+  // Optionally populate user if frontend expects it
+  const populatedBlog = await Blog.findById(updatedBlog._id).populate('user', {
+    username: 1,
+    name: 1
+  });
+
+  res.json(populatedBlog);
+});
+
 module.exports = blogRouter;

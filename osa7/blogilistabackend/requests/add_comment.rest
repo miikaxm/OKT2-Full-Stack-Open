@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/blogs/69aff0f4205b57da5a446775/comments
+Content-Type: application/json; charset=utf-8
+Authorization: Bearer
+
+{
+  "comment": "testi 2"
+}
