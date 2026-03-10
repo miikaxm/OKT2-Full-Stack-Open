@@ -2,22 +2,22 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
-import { applyMiddleware } from "@reduxjs/toolkit";
+import { appendUser, loginUser } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
 
   // React tilat
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const [blogFormVisible, setBlogFormVisible] = useState(false);
 
+  // Blogien läpi käynti näytölle
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
@@ -28,26 +28,27 @@ const App = () => {
       .sort((a, b) => b.likes - a.likes)
   })
 
+  // Kirjautumiseen liittyvät
   // useEffect tarkistamaan löytyykö localstoragesta jo kirjautunut käyttäjä
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(appendUser(user))
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [dispatch]);
 
   // Funktio kirjautumisen käsittelyyn
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({ username, password });
+      const user = await dispatch(loginUser({ username, password }))
 
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+
       setUsername("");
       setPassword("");
     } catch {
@@ -57,10 +58,11 @@ const App = () => {
 
   // Funktio ulos kirjautumisen käsittelyyn
   const handleLogOff = () => {
-    setUser(null);
+    dispatch(appendUser(null))
     localStorage.clear();
   };
 
+  // Blogin luontiin liittyvät
   // Funktio uuden blogin luonnille
   const addBlog = (blogObject) => {
       dispatch(appendBlog(blogObject))
@@ -99,7 +101,9 @@ const App = () => {
   };
 
   // Jos käyttäjä ei ole kirjautunut näytetään vain kirjautumis lomake
-  if (user === null) {
+  console.log("user state:", user)
+  
+  if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
@@ -137,7 +141,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification/>
       <h3>
-        {user.name} logged in{" "}
+        {user.username} logged in{" "}
         <button onClick={handleLogOff}>log off</button>{" "}
       </h3>
       <h2>create new</h2>
