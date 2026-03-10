@@ -157,17 +157,16 @@ const App = () => {
   // If user is found, shows the full page
   return (
     <Router>
-
-     
-
       {/* Normal stuff */}
       <div>
-        <h2>blogs</h2>
+        <nav className='nav'>
+          <Link className='linkStyle' to={'/blogs'}>blogs</Link>
+          <Link className='linkStyle' to={'/users'}>users</Link>
+          <p className='linkStyle'>{user.name} logged in</p>
+          <button className='linkStyle' onClick={handleLogOff}>logout</button>
+        </nav>
+        <h2>blog app</h2>
         <Notification/>
-        <h3>
-          {user.username} logged in{" "}
-          <button onClick={handleLogOff}>log off</button>{" "}
-        </h3>
 
          {/* Routes */}
         <Routes>
@@ -199,10 +198,27 @@ const App = () => {
           />
 
         <Route
+          path="/blogs"
+          element={
+            <div>
+              {blogForm()}
+              {blogs.map((blog) => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  like={likedBlog}
+                  user={user}
+                  remove={remove}
+                />
+              ))}
+            </div>
+          }
+          />
+          
+          <Route
           path="/"
           element={
             <div>
-              <h2>create new</h2>
               {blogForm()}
               {blogs.map((blog) => (
                 <Blog
