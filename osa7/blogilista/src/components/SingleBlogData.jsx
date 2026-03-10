@@ -1,7 +1,13 @@
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import blogService from '../services/blogs'
+import { commentBlog } from "../reducers/blogsReducer";
 
 const SingleBlogData = ({ like, remove }) => {
+  const dispatch = useDispatch()
+  const [comment, setComment] = useState("")
+
   // Gets id from route
   const { id } = useParams();
 
@@ -26,6 +32,14 @@ const SingleBlogData = ({ like, remove }) => {
 
   // Checks if current user is owner of the blog
   const isOwner = blog.user?.username === currentUser?.username;
+
+  const addComment = (e) => {
+    e.preventDefault()
+    if (!comment) return;
+
+    dispatch(commentBlog(blog.id, comment));
+    setComment("");
+  }
   
   return (
     <div>
@@ -37,6 +51,10 @@ const SingleBlogData = ({ like, remove }) => {
         <button style={removeBtn} onClick={() => remove(blog)}>remove</button>
       )}
       <h2>comments</h2>
+      <form onSubmit={addComment}>
+        <input type="text" value={comment} onChange={(event) => setComment(event.target.value)} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map(comment => (
           <li key={comment}>{comment}</li>

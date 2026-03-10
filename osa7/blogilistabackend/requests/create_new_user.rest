@@ -1,8 +1,8 @@
-POST http://localhost:3003/api/users
+POST http://localhost:3001/api/users
 Content-Type: application/json; charset=utf-8
 
 {
-    "username": "test",
-    "password": "test",
-    "name": "testi käyttäjä"
+    "username": "miika0",
+    "password": "matias",
+    "name": "Miika Valkonen"
 }
