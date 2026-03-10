@@ -12,7 +12,11 @@ const blogSlice = createSlice({
 
     likeBlog(state, action) {
       const updated = action.payload;
-      return state.map(b => (b.id === updated.id ? updated : b));
+      return state.map(b =>
+        b.id === updated.id
+          ? { ...updated, user: b.user }
+          : b
+      );
     },
 
     setBlogs(state, action) {

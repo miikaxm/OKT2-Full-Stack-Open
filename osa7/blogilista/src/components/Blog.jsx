@@ -1,12 +1,13 @@
 import { useState } from "react";
 
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
+
 const Blog = ({ blog, like, user, remove }) => {
-  const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
-
-  // Tyylejä
+  // Styles
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,32 +16,12 @@ const Blog = ({ blog, like, user, remove }) => {
     marginBottom: 5,
   };
 
-  const removeBtn = {
-    backgroundColor: "red",
-    borderRadius: 5,
-  };
-
   // Remove buttoni blogeihin jotka on luonut sisään kirjautunut käyttäjä
   if (user.username === blog.user?.username) {
     return (
       <div style={blogStyle} className="blog">
-        <div style={hideWhenVisible}>
-          {blog.title}
-          <button onClick={() => setVisible(true)}>view</button>
-        </div>
-
-        <div style={showWhenVisible}>
-          {blog.title}
-          <button onClick={() => setVisible(false)}>hide</button>
-
-          <div>{blog.url}</div>
-          <div>
-            likes {blog.likes} <button onClick={() => like(blog)}>like</button>
-          </div>
-          <div>{blog.author}</div>
-          <button style={removeBtn} onClick={() => remove(blog)}>
-            remove
-          </button>
+        <div>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
         </div>
       </div>
     );
@@ -49,20 +30,8 @@ const Blog = ({ blog, like, user, remove }) => {
   // Ilman remove buttonia olevat
   return (
     <div style={blogStyle} className="blog">
-      <div style={hideWhenVisible}>
-        {blog.title} {blog.author}
-        <button onClick={() => setVisible(true)}>view</button>
-      </div>
-
-      <div style={showWhenVisible}>
-        {blog.title}
-        <button onClick={() => setVisible(false)}>hide</button>
-
-        <div>{blog.url}</div>
-        <div>
-          likes {blog.likes} <button onClick={() => like(blog)}>like</button>
-        </div>
-        <div>{blog.author}</div>
+      <div>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
       </div>
     </div>
   );

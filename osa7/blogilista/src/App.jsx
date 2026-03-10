@@ -13,6 +13,8 @@ import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Blogform from "./components/Blogform";
 import Users from "./components/Users";
+import User from './components/User';
+import SingleBlogData from './components/SingleBlogData'
 
 // Services
 import blogService from "./services/blogs";
@@ -21,7 +23,6 @@ import blogService from "./services/blogs";
 import { setNotification } from "./reducers/notificationReducer";
 import { appendBlog, blogLike, deleteBlog, initializeBlogs } from "./reducers/blogsReducer";
 import { appendUser, loginUser } from "./reducers/userReducer";
-import User from './components/User';
 
 
 const App = () => {
@@ -186,6 +187,15 @@ const App = () => {
                 <User/>  
               </div>
           }
+          />
+
+          <Route
+            path='/blogs/:id'
+            element={
+              <div>
+                <SingleBlogData like={likedBlog} remove={remove} />
+              </div>
+            }
           />
 
         <Route
