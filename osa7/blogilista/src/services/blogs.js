@@ -1,13 +1,13 @@
 import axios from "axios";
 const baseUrl = "/api/blogs";
-
 let token = null;
 
+// Sets token
 const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
 
-// Kaikkien blogien hakeminen
+// Gets all blogs
 const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
@@ -21,7 +21,7 @@ const getById = async (id) => {
 };
 
 
-// Uuden blogin luonti
+// Creates a new blog
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
@@ -31,13 +31,13 @@ const create = async (newObject) => {
   return response.data;
 };
 
-// Blogin päivitys id:n perusteella
+// Update blog by id
 const update = (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject);
   return request.then((response) => response.data);
 };
 
-// Blogin päivitys id:n perusteella
+// Remove blog by id
 const remove = async (id) => {
   const config = {
     headers: { Authorization: token },
@@ -48,6 +48,7 @@ const remove = async (id) => {
   return response.data;
 };
 
+// Add to blog by id
 const addComment = async (id, comment) => {
   const config = {
     headers: { Authorization: token },
