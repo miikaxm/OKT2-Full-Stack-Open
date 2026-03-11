@@ -1,7 +1,7 @@
 // React router
 import {
   BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route, Link, useNavigate
 } from 'react-router-dom'
 
 // Imports from react
@@ -30,15 +30,19 @@ const App = () => {
   // Dispatch and get user from redux state
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
+  
+  const navigate = useNavigate()
 
   // React states
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [blogFormVisible, setBlogFormVisible] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   // Getting blogs from redux state and sorting them via likes
   useEffect(() => {
     dispatch(initializeBlogs())
+    setLoading(false)
   }, [dispatch])
 
   const blogs = useSelector(state => {
@@ -80,6 +84,7 @@ const App = () => {
   const handleLogOff = () => {
     dispatch(appendUser(null))
     localStorage.clear();
+    navigate('/')
   };
 
   /* Create blog */
@@ -124,6 +129,13 @@ const App = () => {
 
   // If user is not found, Site just shows login form
   if (!user) {
+    if (loading) {
+      return (
+        <Container className="mt-5 text-center">
+          <h2>Loading application...</h2>
+        </Container>
+      )
+    }
       return (
         <Container className="mt-5">
           <Row className="justify-content-md-center">
@@ -170,100 +182,97 @@ const App = () => {
 
   // If user is found, shows the full page
   return (
-    <Router>
-      {/* Normal stuff */}
-      <div className='container'>
-        <Navbar expand="lg" className="bg-body-tertiary">
-          <Container>
-            <Navbar.Brand href="#home">Blog app</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <Nav.Link href="#" as="span">
-                  <Link className='linkStyle' to={'/blogs'}>blogs</Link>
-                </Nav.Link>
-                <Nav.Link href="#" as="span">
-                  <Link className='linkStyle' to={'/users'}>users</Link>
-                </Nav.Link>
-              </Nav>
-              <Navbar.Text>
-                Signed in as: <a href="#">{user.name}</a>
-              </Navbar.Text>
-              <Button className='m-3' variant="primary" onClick={handleLogOff}>Logout</Button>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+    <div className='container'>
+      <Navbar expand="lg" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand href="#">Blog app</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="#" as="span">
+                <Link className='linkStyle' to={'/blogs'}>blogs</Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link className='linkStyle' to={'/users'}>users</Link>
+              </Nav.Link>
+            </Nav>
+            <Navbar.Text>
+              Signed in as: <a href="#">{user.name}</a>
+            </Navbar.Text>
+            <Button className='m-3' variant="primary" onClick={handleLogOff}>Logout</Button>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
 
 
-        <Notification/>
+      <Notification/>
 
-         {/* Routes */}
-        <Routes>
+       {/* Routes */}
+      <Routes>
+      <Route
+        path="/users"
+        element={
+          <div>
+            <Users />
+          </div>
+        }
+        />
+        
         <Route
-          path="/users"
+          path='/users/:id'
           element={
             <div>
-              <Users />
+              <User/>  
             </div>
-          }
-          />
-          
-          <Route
-            path='/users/:id'
-            element={
-              <div>
-                <User/>  
-              </div>
-          }
-          />
-
-          <Route
-            path='/blogs/:id'
-            element={
-              <div>
-                <SingleBlogData like={likedBlog} remove={remove} />
-              </div>
-            }
-          />
+        }
+        />
 
         <Route
-          path="/blogs"
+          path='/blogs/:id'
           element={
             <div>
-              {blogForm()}
-              {blogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  like={likedBlog}
-                  user={user}
-                  remove={remove}
-                />
-              ))}
-            </div>
-          }
-          />
-          
-          <Route
-          path="/"
-          element={
-            <div>
-              {blogForm()}
-              {blogs.map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  like={likedBlog}
-                  user={user}
-                  remove={remove}
-                />
-              ))}
+              <SingleBlogData like={likedBlog} remove={remove} />
             </div>
           }
         />
-      </Routes>
-      </div>
-    </Router>
+
+      <Route
+        path="/blogs"
+        element={
+          <div>
+            {blogForm()}
+            {blogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                like={likedBlog}
+                user={user}
+                remove={remove}
+              />
+            ))}
+          </div>
+        }
+        />
+        
+        <Route
+        path="/"
+        element={
+          <div>
+            {blogForm()}
+            {blogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                like={likedBlog}
+                user={user}
+                remove={remove}
+              />
+            ))}
+          </div>
+        }
+      />
+    </Routes>
+    </div>
   );
 };
 
