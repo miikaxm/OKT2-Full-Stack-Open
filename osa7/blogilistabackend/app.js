@@ -1,8 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path")
+
 const config = require("./utils/config");
 const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
+
 const blogRouter = require("./controllers/blog");
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
@@ -21,6 +24,7 @@ mongoose
   });
 
 app.use(express.static("dist"));
+
 app.use(express.json());
 app.use(middleware.requestLogger);
 
@@ -30,11 +34,19 @@ if (process.env.NODE_ENV === "test") {
 }
 
 app.use(middleware.tokenExtractor);
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next()
+  }
+  res.sendFile(path.resolve(__dirname, "dist", "index.html"))
+})
+
+// API routes
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
 
-app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
 module.exports = app;

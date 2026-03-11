@@ -176,6 +176,12 @@ const App = () => {
               </Card>
             </Col>
           </Row>
+          <form action="">
+            <p>create new user</p>
+            <input type="text" placeholder='username' />
+            <input type="password" placeholder='password' />
+            <button>Register</button>
+          </form>
         </Container>
     );
   }
