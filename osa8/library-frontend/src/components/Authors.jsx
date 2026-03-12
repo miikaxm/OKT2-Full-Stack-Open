@@ -6,10 +6,6 @@ const Authors = (props) => {
   const [author, setAuthor] = useState('')
   const [born, setBorn] = useState('')
 
-  if (!props.show) {
-    return null
-  }
-
   const { loading, error, data } = useQuery(ALL_AUTHORS)
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -19,6 +15,10 @@ const Authors = (props) => {
   if (error) return <p>Error: {error.message}</p>
 
   const authors = data.allAuthors
+
+  if (!props.show) {
+    return null
+  }
 
   const UpdateBorn = (e) => {
     e.preventDefault()
