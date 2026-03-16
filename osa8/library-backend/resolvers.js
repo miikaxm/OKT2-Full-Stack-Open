@@ -44,7 +44,9 @@ const resolvers = {
         author: author._id
       })
       
-      return book.save()
+      await book.save()
+
+      return Book.findById(book._id).populate('author')
     },
 
     editAuthor: async (root, args) => {
