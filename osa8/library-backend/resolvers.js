@@ -29,6 +29,34 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       let author = await Author.findOne({ name: args.author })
+      const bookExists = await Book.exists({ name: args.title })
+
+      if (args.title.length > 5) {
+        throw new GraphQLError(`Title must be 5 or more letters: ${args.title}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+          },
+        })
+      }
+
+      if (args.author.length > 4) {
+        throw new GraphQLError(`Authors name must be 4 or more letters: ${args.author}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.author,
+          },
+        })
+      }
+
+      if (bookExists) {
+        throw new GraphQLError(`Title must be unique: ${args.title}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+          },
+        })
+      }
 
       if (!author) {
         author = new Author({
@@ -44,8 +72,18 @@ const resolvers = {
         author: author._id
       })
       
-      await book.save()
-
+      try {
+        await book.save()
+      } catch (error) {
+        throw new GraphQLError(`Saving book failed: ${error.message}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+            error
+          }
+        })
+      }
+      
       return Book.findById(book._id).populate('author')
     },
 
@@ -57,7 +95,20 @@ const resolvers = {
       }
 
       author.born = args.setBornTo
-      return author.save()
+      
+      try {
+        await author.save()
+      } catch (error) {
+        throw new GraphQLError(`Saving author failed: ${error.message}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.setBornTo,
+            error
+          }
+        })
+      }
+      
+      return author
     }
   }
 }
