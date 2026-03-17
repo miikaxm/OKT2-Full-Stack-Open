@@ -22,6 +22,11 @@ const resolvers = {
     allAuthors: async () => Author.find({}),
     me: (root, args, context) => {
       return context.currentUser
+    },
+    booksByGenre: async (root, args) => {
+      const books = await Book.find({}).populate('author')
+      const filteredBooks = books.filter((b) => b.genres.includes(args.genre))
+      return filteredBooks
     }
   },
 
