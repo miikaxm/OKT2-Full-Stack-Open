@@ -25,6 +25,11 @@ const resolvers = {
     },
     booksByGenre: async (root, args) => {
       const books = await Book.find({}).populate('author')
+
+      if (args.genre === '') {
+        return books
+      }
+
       const filteredBooks = books.filter((b) => b.genres.includes(args.genre))
       return filteredBooks
     }
