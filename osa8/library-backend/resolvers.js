@@ -1,8 +1,11 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError, subscribe } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -107,6 +110,8 @@ const resolvers = {
           }
         })
       }
+
+      pubsub.publish('BOOK_ADDED', { personAdded: person })
       
       return Book.findById(book._id).populate('author')
     },
@@ -176,6 +181,12 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    }
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
     }
   }
 }
