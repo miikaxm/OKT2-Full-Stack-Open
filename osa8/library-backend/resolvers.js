@@ -1,6 +1,7 @@
-const { GraphQLError, subscribe } = require('graphql')
+const { GraphQLError } = require('graphql')
 const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
+
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
@@ -111,7 +112,7 @@ const resolvers = {
         })
       }
 
-      pubsub.publish('BOOK_ADDED', { personAdded: person })
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
       
       return Book.findById(book._id).populate('author')
     },

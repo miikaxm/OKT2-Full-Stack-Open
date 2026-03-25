@@ -5,15 +5,16 @@ import { useState } from "react"
 
 
 const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
-
   const [filter, setFilter] = useState('')
   let genre = filter.toString()
+
   const { loading, error, data } = useQuery(BOOKS_BY_GENRE, {
     variables: { genre }
   })
+
+  if (!props.show) {
+    return null
+  }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>

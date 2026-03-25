@@ -16,6 +16,15 @@ const Recommend = ({ show }) => {
   if (booksLoading) return <p>loading books...</p>
   if (booksError) return <p>error loading books</p>
 
+  if (booksData.booksByGenre.length === 0) {
+    return (
+      <div>
+        <h2>recommendations</h2>
+        <p>There is not any books with genre <b>{genre}</b></p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>recommendations</h2>

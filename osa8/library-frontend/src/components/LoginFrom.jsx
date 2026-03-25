@@ -3,10 +3,6 @@ import { useMutation } from '@apollo/client/react'
 import { LOGIN } from '../queries'
 
 const LoginForm = ({ setToken, show }) => {
-  if (!show) {
-    return null
-  }
-
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -20,6 +16,10 @@ const LoginForm = ({ setToken, show }) => {
       console.log(error)
     }
   })
+
+  if (!show) {
+    return null
+  }
 
   const submit = (e) => {
     e.preventDefault()
