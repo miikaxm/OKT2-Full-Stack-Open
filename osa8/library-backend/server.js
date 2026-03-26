@@ -15,7 +15,7 @@ const resolvers = require('./resolvers')
 const typeDefs = require('./schema')
 const User = require('./models/user')
 
-const getUserFromAuthHeader = async (auth) => {
+const getUserFromAuthHeader = async (auth) => {  
   if (!auth || !auth.startsWith('Bearer ')) return null
  
   try {
@@ -33,21 +33,22 @@ const startServer = async (port) => {
 
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: '/graphql',
+    path: '/',
   })
  
   const schema = makeExecutableSchema({ typeDefs, resolvers })
   const serverCleanup = useServer({ schema }, wsServer)
 
   const server = new ApolloServer({
-    schema, 
+    schema,
+    introspection: true,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
         async serverWillStart() {
           return {
             async drainServer() {
-              await serverCleanup.dispose();
+              await serverCleanup.dispose()
             },
           }
         },
@@ -58,7 +59,7 @@ const startServer = async (port) => {
   await server.start()
 
   app.use(
-    '/graphql',
+    '/',
     cors(),
     express.json(),
     expressMiddleware(server, {

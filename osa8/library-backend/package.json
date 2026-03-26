@@ -23,6 +23,7 @@
     "graphql-ws": "^6.0.7",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.3.0",
+    "uuid": "^13.0.0",
     "ws": "^8.20.0"
   }
 }
