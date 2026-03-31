@@ -9,7 +9,8 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginFrom'
 import Recommend from './components/Recommend'
-import { BOOK_ADDED } from './queries'
+import { ALL_BOOKS, BOOK_ADDED } from './queries'
+import { addBookToCache } from './utils/apolloCache'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -18,8 +19,9 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      console.log('SUBSCRIPTION DATA:', data)
-      alert(`Book added: ${data.data.bookAdded.title}`)
+      const addedBook = data.data.bookAdded
+      alert(`Book added: ${addedBook.title}`)
+      addBookToCache(client.cache, addedBook)
     },
   })
 
