@@ -23,7 +23,10 @@ const resolvers = {
         return Book.find({ genres: args.genre }).populate('author')
       }
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      console.log('All Authors')
+      return Author.find({}).populate('bookCount')
+    },
     me: (root, args, context) => {
       return context.currentUser
     },
@@ -36,12 +39,6 @@ const resolvers = {
 
       const filteredBooks = books.filter((b) => b.genres.includes(args.genre))
       return filteredBooks
-    }
-  },
-
-  Author: {
-    bookCount: async (root) => {
-      return await Book.countDocuments({ author: root._id })
     }
   },
 
